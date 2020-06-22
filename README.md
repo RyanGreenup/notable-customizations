@@ -74,6 +74,9 @@ If you want to create links between your notes in a semi interactive fashion, th
 command -v fd >/dev/null 2>&1 || { echo >&2 "I require fd-find but it's not installed. install refer to https://github.com/sharkdp/fd ;  Aborting."; exit 1; }
 command -v sk >/dev/null 2>&1 || { echo >&2 "I require sk but it's not installed. install refer to  https://github.com/lotabout/skim Aborting."; exit 1; }
 
+
+x="xclip -selection clipboard"
+
 Choose_Name_only_Preview () {
     cd ~/Notes/MD/notes
     fd \.md | sed s/^/basename\ / | bash | sk --preview "mdcat (fd {})" --bind pgup:preview-page-up,pgdn:preview-page-down
@@ -91,7 +94,8 @@ Choose_File () {
 SOURCE=$(realpath $(Choose_File))
 TARGET=$(realpath $(Choose_File))
 
-realpath --relative-to=$SOURCE $TARGET
+realpath --relative-to=$SOURCE $TARGET | $x
+
 ```
 
 This can also be easily modified to create a script to [fix a link in the clipboard](https://github.com/RyanGreenup/DotFiles/blob/master/Scripts/bin/fixLink.sh)
