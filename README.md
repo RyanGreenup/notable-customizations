@@ -69,22 +69,25 @@ This works fairly well on Wikipedia pages with a lot of math, for example [this 
 If you want to create links between your notes in a semi interactive fashion, this script is quite handy, it prompts you to choose to notes and it will make a relative path between them, this is advantageous to `[[wiki-links]]` in that they will also work with a static site generator or on a mobile app.
 
 ```bash
-#!/usr/bin/env bash
+#!/bin/bash
 
 command -v fd >/dev/null 2>&1 || { echo >&2 "I require fd-find but it's not installed. install refer to https://github.com/sharkdp/fd ;  Aborting."; exit 1; }
 command -v sk >/dev/null 2>&1 || { echo >&2 "I require sk but it's not installed. install refer to  https://github.com/lotabout/skim Aborting."; exit 1; }
+NOTE_DIR="$HOME/Notes/MD/notes"
 
+cd $NOTE_DIR
 
 x="xclip -selection clipboard"
 
 Choose_Name_only_Preview () {
-    cd ~/Notes/MD/notes
+cd $NOTE_DIR
+
     fd \.md | sed s/^/basename\ / | bash | sk --preview "mdcat (fd {})" --bind pgup:preview-page-up,pgdn:preview-page-down
 }
 
 Choose_File () {
-    cd ~/Notes/MD/notes
 
+cd $NOTE_DIR
     fd \.md | sk --preview "mdcat {}" --bind pgup:preview-page-up,pgdn:preview-page-down
 }
 
@@ -94,7 +97,10 @@ Choose_File () {
 SOURCE=$(realpath $(Choose_File))
 TARGET=$(realpath $(Choose_File))
 
-realpath --relative-to=$SOURCE $TARGET | $x
+THE_FILE_PATH=$(realpath --relative-to=$SOURCE $TARGET)
+
+echo "[]($THE_FILE_PATH)" | xclip -selection clipboard
+
 
 ```
 
